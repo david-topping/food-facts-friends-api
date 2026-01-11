@@ -9,7 +9,8 @@
     "start": "node dist/index.js",
     "lint": "tsc --noEmit",
     "lint:watch": "tsc --noEmit --watch",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -30,8 +31,16 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/github": "^12.0.2",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "semantic-release": "^25.0.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
