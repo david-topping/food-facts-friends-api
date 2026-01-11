@@ -1,0 +1,60 @@
+name: Deploy Release to PROD
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "GitHub release tag to deploy (e.g. v1.2.3)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-prod:
+    name: Deploy Release ${{ inputs.release_tag }} to PROD
+
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+
+    steps:
+      - name: Await PROD approval
+        run: |
+          echo "Deploying to PROD"
+          test -n "${{ vars.ENV }}"
+
+      - name: Checkout release tag
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ inputs.release_tag }}
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Prepare deploy folder
+        run: |
+          rm -rf deploy
+          mkdir deploy
+          cp -r dist deploy/
+          cp package.json package-lock.json deploy/
+
+      - name: Deploy to BLD
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: deploy/
+          dangerous-clean-slate: false
