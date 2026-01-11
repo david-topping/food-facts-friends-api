@@ -54,7 +54,6 @@ jobs:
           local-dir: deploy/
           dangerous-clean-slate: false
 
-
       - name: Create GitHub Release
         env:
           HUSKY: 0

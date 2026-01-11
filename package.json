@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "tsc --noEmit",
-    "lint:watch": "tsc --noEmit --watch",
+    "lint:fix": "npm run lint",
     "clean": "rm -rf dist",
-    "prepare": "husky"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/david-topping/food-facts-friends-api/issues"
   },

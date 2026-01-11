@@ -1,8 +1,8 @@
-import { Express } from "express";
+import { Router } from "express";
 import donationRoutes from "../../adapters/inbound/http/donations/donation.routes";
 import webhookRoutes from "../../adapters/inbound/http/webhooks/webhook.routes";
 
-export function registerRoutes(app: Express) {
-  app.use("/donations", donationRoutes);
-  app.use("/webhooks", webhookRoutes);
+export function registerRoutes(router: Router) {
+  router.use("/donations", donationRoutes);
+  router.use("/webhooks", webhookRoutes);
 }
