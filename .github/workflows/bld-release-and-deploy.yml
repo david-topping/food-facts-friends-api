@@ -38,19 +38,23 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Create GitHub Release
-        env:
-          HUSKY: 0
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+      - name: Prepare deploy folder
+        run: |
+          rm -rf deploy
+          mkdir deploy
+          cp -r dist deploy/
+          cp package.json package-lock.json deploy/
 
-      - name: Deploy to cPanel (BLD)
+      - name: Deploy to BLD
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          local-dir: |
-            dist/
-            package.json
-            package-lock.json
+          local-dir: deploy/
+
+      - name: Create GitHub Release
+        env:
+          HUSKY: 0
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
