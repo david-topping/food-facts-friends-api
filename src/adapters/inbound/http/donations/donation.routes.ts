@@ -15,8 +15,8 @@ const paymentProvider = new StripePaymentProvider(
 const createDonation = new CreateDonation(paymentProvider);
 const controller = new CreateDonationController(createDonation);
 
-router.post("/", validateSchema(createDonationSchema), (req, res) =>
-  controller.handle(req, res)
+router.post("/", validateSchema(createDonationSchema), (req, res, next) =>
+  controller.handle(req, res, next)
 );
 
 export default router;

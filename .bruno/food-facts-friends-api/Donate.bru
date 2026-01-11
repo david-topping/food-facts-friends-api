@@ -6,6 +6,14 @@ meta {
 
 post {
   url: {{PROTOCOL}}://{{FFF_API_TLDN}}/donations
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "amounntPence":100,
+    "email":"topping.david11@gmail.com",
+    "giftAid": true
+  }
 }
