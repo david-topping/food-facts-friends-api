@@ -52,6 +52,8 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: deploy/
+          dangerous-clean-slate: false
+
 
       - name: Create GitHub Release
         env:
