@@ -38,19 +38,19 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Copy .htaccess to dist
-        run: cp .htaccess dist/
-
       - name: Create GitHub Release
         env:
           HUSKY: 0
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
 
-      - name: Deploy to BLD
+      - name: Deploy to cPanel (BLD)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          local-dir: dist/
+          local-dir: |
+            dist/
+            package.json
+            package-lock.json
