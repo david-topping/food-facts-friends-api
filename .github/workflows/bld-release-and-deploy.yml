@@ -38,12 +38,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Create GitHub Release
-        env:
-          HUSKY: 0
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
-
       - name: Prepare deploy folder
         run: |
           rm -rf deploy
@@ -58,3 +52,9 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: deploy/
+
+      - name: Create GitHub Release
+        env:
+          HUSKY: 0
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
