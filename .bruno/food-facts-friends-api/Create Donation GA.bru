@@ -1,0 +1,30 @@
+meta {
+  name: Create Donation GA
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{PROTOCOL}}://{{FFF_API_TLDN}}/donations
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "amountPence": 500,
+    "email": "feathers.mcgraw@example.com",
+    "giftAid": true,
+    "paymentIntentId": "pi_3StBwcD4FSsGayz00BcZJpWM",
+    "giftAidDetails": {
+      "firstName": "Feathers",
+      "lastName": "McGraw",
+      "addressLine1": "12 West Wallaby Street",
+      "addressLine2": "Flat 3B",
+      "city": "Wigan",
+      "postcode": "WN1 1AA",
+      "country": "United Kingdom"
+    }
+  }
+  
+}

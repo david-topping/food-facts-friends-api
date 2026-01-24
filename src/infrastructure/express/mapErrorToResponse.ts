@@ -16,7 +16,6 @@ type ErrorMapping = {
 };
 
 export function mapErrorToResponse(err: unknown): ErrorMapping {
-  // ---- STRIPE ----
   if (err instanceof Stripe.errors.StripeError) {
     return {
       status: 502,
@@ -30,7 +29,6 @@ export function mapErrorToResponse(err: unknown): ErrorMapping {
     };
   }
 
-  // ---- VALIDATION ----
   if (err instanceof ValidationError) {
     return {
       status: 400,
@@ -44,7 +42,6 @@ export function mapErrorToResponse(err: unknown): ErrorMapping {
     };
   }
 
-  // ---- GENERIC ----
   if (err instanceof Error) {
     return {
       status: 500,
@@ -58,7 +55,6 @@ export function mapErrorToResponse(err: unknown): ErrorMapping {
     };
   }
 
-  // ---- FALLBACK ----
   return {
     status: 500,
     body: {

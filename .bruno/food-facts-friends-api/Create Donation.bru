@@ -1,5 +1,5 @@
 meta {
-  name: Donations
+  name: Create Donation
   type: http
   seq: 1
 }
@@ -12,8 +12,9 @@ post {
 
 body:json {
   {
-    "amountPence":100,
+    "amountPence":500,
     "email":"topping.david11@gmail.com",
-    "giftAid": true
+    "giftAid": false,
+    "paymentIntentId": "blah"
   }
 }
