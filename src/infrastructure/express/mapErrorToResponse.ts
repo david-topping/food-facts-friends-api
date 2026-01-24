@@ -16,7 +16,6 @@ type ErrorMapping = {
 };
 
 export function mapErrorToResponse(err: unknown): ErrorMapping {
-  // ---- STRIPE ----
   if (err instanceof Stripe.errors.StripeError) {
     return {
       status: 502,

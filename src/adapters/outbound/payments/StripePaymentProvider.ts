@@ -1,9 +1,10 @@
 import Stripe from "stripe";
 import {
   PaymentProvider,
-  CreatePaymentIntentInput,
-  PaymentIntent,
+  CreateDonationIntentInput,
+  PaymentIntentResult,
 } from "../../../domain/ports/PaymentProvider";
+import { RetrievedPaymentIntent } from "../../../domain/entities/DonationIntent";
 
 export class StripePaymentProvider implements PaymentProvider {
   private stripe: Stripe;
@@ -13,8 +14,8 @@ export class StripePaymentProvider implements PaymentProvider {
   }
 
   async createPaymentIntent(
-    input: CreatePaymentIntentInput,
-  ): Promise<PaymentIntent> {
+    input: CreateDonationIntentInput,
+  ): Promise<PaymentIntentResult> {
     const intent = await this.stripe.paymentIntents.create({
       amount: input.amountPence,
       currency: input.currency,
@@ -31,5 +32,21 @@ export class StripePaymentProvider implements PaymentProvider {
       id: intent.id,
       clientSecret: intent.client_secret,
     };
+  }
+
+  async getPaymentIntent(
+    paymentIntentId: string,
+  ): Promise<RetrievedPaymentIntent | null> {
+    try {
+      const intent = await this.stripe.paymentIntents.retrieve(paymentIntentId);
+
+      return {
+        id: intent.id,
+        amount: intent.amount,
+        status: intent.status,
+      };
+    } catch (error) {
+      return null;
+    }
   }
 }

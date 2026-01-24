@@ -1,15 +1,22 @@
-export interface PaymentIntent {
-  id: string;
-  clientSecret: string;
-}
+import { RetrievedPaymentIntent } from "../entities/DonationIntent";
 
-export interface CreatePaymentIntentInput {
+export interface CreateDonationIntentInput {
   amountPence: number;
   currency: string;
   receiptEmail: string;
   metadata?: Record<string, string>;
 }
 
+export interface PaymentIntentResult {
+  id: string;
+  clientSecret: string;
+}
+
 export interface PaymentProvider {
-  createPaymentIntent(input: CreatePaymentIntentInput): Promise<PaymentIntent>;
+  createPaymentIntent(
+    input: CreateDonationIntentInput,
+  ): Promise<PaymentIntentResult>;
+  getPaymentIntent(
+    paymentIntentId: string,
+  ): Promise<RetrievedPaymentIntent | null>;
 }

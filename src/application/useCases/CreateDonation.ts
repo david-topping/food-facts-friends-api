@@ -1,6 +1,21 @@
 import { PaymentProvider } from "../../domain/ports/PaymentProvider";
 import { DonationRepository } from "../../domain/ports/DonationRepository";
-import { Donation } from "../../domain/entities/Donation";
+import { DonationIntent } from "../../domain/entities/DonationIntent";
+
+export type GiftAidDetails = {
+  firstName: string;
+  lastName: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  postcode: string;
+  country?: string;
+};
+
+export type CreateDonationInput = {
+  amountPence: number;
+  email: string;
+} & ({ giftAid: false } | { giftAid: true; giftAidDetails: GiftAidDetails });
 
 export class CreateDonation {
   constructor(
@@ -8,26 +23,8 @@ export class CreateDonation {
     private readonly donationRepository: DonationRepository,
   ) {}
 
-  async execute(input: {
-    amountPence: number;
-    email: string;
-    giftAid: boolean;
-    giftAidDetails?: {
-      firstName: string;
-      lastName: string;
-      addressLine1: string;
-      addressLine2?: string;
-      city: string;
-      postcode: string;
-      country?: string;
-    };
-  }) {
-    const donation = new Donation(
-      crypto.randomUUID(),
-      input.amountPence,
-      input.email,
-      input.giftAid,
-    );
+  async execute(input: CreateDonationInput) {
+    const donation = new DonationIntent(input.amountPence, input.email);
 
     const paymentIntent = await this.paymentProvider.createPaymentIntent({
       amountPence: donation.amountPence,
@@ -35,26 +32,26 @@ export class CreateDonation {
       receiptEmail: donation.email,
       metadata: {
         donationId: donation.id,
-        giftAid: String(donation.giftAid),
+        giftAid: String(input.giftAid),
       },
     });
 
     await this.donationRepository.save({
-      stripePaymentIntentId: paymentIntent.id,
+      paymentIntentId: paymentIntent.id,
       amountPence: donation.amountPence,
       currency: "gbp",
       email: donation.email,
       status: "pending",
-      giftAid: donation.giftAid,
-      giftAidDetails: donation.giftAid
+      giftAid: input.giftAid,
+      giftAidDetails: input.giftAid
         ? {
-            firstName: input.giftAidDetails!.firstName,
-            lastName: input.giftAidDetails!.lastName,
-            addressLine1: input.giftAidDetails!.addressLine1,
-            addressLine2: input.giftAidDetails!.addressLine2,
-            city: input.giftAidDetails!.city,
-            postcode: input.giftAidDetails!.postcode,
-            country: input.giftAidDetails!.country ?? "United Kingdom",
+            firstName: input.giftAidDetails.firstName,
+            lastName: input.giftAidDetails.lastName,
+            addressLine1: input.giftAidDetails.addressLine1,
+            addressLine2: input.giftAidDetails.addressLine2,
+            city: input.giftAidDetails.city,
+            postcode: input.giftAidDetails.postcode,
+            country: input.giftAidDetails.country ?? "United Kingdom",
           }
         : undefined,
     });

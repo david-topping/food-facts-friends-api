@@ -1,11 +1,9 @@
 import { Sequelize } from "sequelize";
-import {
-  DonationRepository,
-  CreateDonationRecord,
-} from "../../../../domain/ports/DonationRepository";
+import { DonationRepository } from "../../../../domain/ports/DonationRepository";
 import { initModels } from "./models/initModels";
 import { DonationModel } from "./models/Donation.model";
 import { GiftAidDetailsModel } from "./models/GiftAidDetials.model";
+import { DonationRecord } from "../../../../domain/entities/DonationRecord";
 
 export class SequelizeDonationRepository implements DonationRepository {
   private Donation: typeof DonationModel;
@@ -17,11 +15,19 @@ export class SequelizeDonationRepository implements DonationRepository {
     this.GiftAidDetails = models.GiftAidDetailsModel;
   }
 
-  async save(input: CreateDonationRecord): Promise<void> {
+  async findByPaymentIntentId(paymentIntentId: string): Promise<boolean> {
+    const donation = await this.Donation.findOne({
+      where: { stripe_payment_intent_id: paymentIntentId },
+    });
+
+    return !!donation;
+  }
+
+  async save(input: DonationRecord): Promise<void> {
     await this.sequelize.transaction(async (t) => {
       const donation = await this.Donation.create(
         {
-          stripe_payment_intent_id: input.stripePaymentIntentId,
+          stripe_payment_intent_id: input.paymentIntentId,
           amount_pence: input.amountPence,
           currency: input.currency,
           email: input.email,

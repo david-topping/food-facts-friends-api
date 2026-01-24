@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { validateSchema } from "../validateSchema";
-import { createDonationSchema } from "./donation.schema";
 
-import { CreateDonationController } from "./CreateDonationController";
+import { validateSchema } from "../validateSchema";
+import { createDonationSchema } from "./createDonation.schema";
+import { CreateDonationController } from "./CreateDonation.Controller";
 
 type DonationControllers = {
   createDonationController: CreateDonationController;
@@ -11,8 +11,11 @@ type DonationControllers = {
 export function createDonationRouter(controllers: DonationControllers) {
   const router = Router();
 
-  router.post("/", validateSchema(createDonationSchema), (req, res, next) =>
-    controllers.createDonationController.execute(req, res, next),
+  router.post(
+    ["", "/"],
+    validateSchema(createDonationSchema),
+    (req, res, next) =>
+      controllers.createDonationController.execute(req, res, next),
   );
 
   return router;
