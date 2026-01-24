@@ -1,22 +1,19 @@
 import { Router } from "express";
-import { StripePaymentProvider } from "../../../outbound/payments/StripePaymentProvider";
-import { CreateDonation } from "../../../../application/use-cases/CreateDonation";
-import { CreateDonationController } from "./CreateDonationController";
+import { validateSchema } from "../validateSchema";
 import { createDonationSchema } from "./donation.schema";
-import { validateSchema } from "../middleware/validateSchema";
 
-const router = Router();
+import { CreateDonationController } from "./CreateDonationController";
 
-const paymentProvider = new StripePaymentProvider(
-  process.env.STRIPE_SECRET_KEY!
-);
+type DonationControllers = {
+  createDonationController: CreateDonationController;
+};
 
-// TODO: inject DonationRepository here (for db)
-const createDonation = new CreateDonation(paymentProvider);
-const controller = new CreateDonationController(createDonation);
+export function createDonationRouter(controllers: DonationControllers) {
+  const router = Router();
 
-router.post("/", validateSchema(createDonationSchema), (req, res, next) =>
-  controller.handle(req, res, next)
-);
+  router.post("/", validateSchema(createDonationSchema), (req, res, next) =>
+    controllers.createDonationController.execute(req, res, next),
+  );
 
-export default router;
+  return router;
+}

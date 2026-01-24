@@ -30,7 +30,6 @@ export function mapErrorToResponse(err: unknown): ErrorMapping {
     };
   }
 
-  // ---- VALIDATION ----
   if (err instanceof ValidationError) {
     return {
       status: 400,
@@ -44,7 +43,6 @@ export function mapErrorToResponse(err: unknown): ErrorMapping {
     };
   }
 
-  // ---- GENERIC ----
   if (err instanceof Error) {
     return {
       status: 500,
@@ -58,7 +56,6 @@ export function mapErrorToResponse(err: unknown): ErrorMapping {
     };
   }
 
-  // ---- FALLBACK ----
   return {
     status: 500,
     body: {

@@ -3,9 +3,13 @@ export interface PaymentIntent {
   clientSecret: string;
 }
 
+export interface CreatePaymentIntentInput {
+  amountPence: number;
+  currency: string;
+  receiptEmail: string;
+  metadata?: Record<string, string>;
+}
+
 export interface PaymentProvider {
-  createPaymentIntent(
-    amountPence: number,
-    metadata: Record<string, string>
-  ): Promise<PaymentIntent>;
+  createPaymentIntent(input: CreatePaymentIntentInput): Promise<PaymentIntent>;
 }
