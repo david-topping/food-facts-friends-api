@@ -22,6 +22,14 @@ app.use(express.json());
 const router = express.Router();
 app.use(API_BASE_PATH, router);
 
+router.get("/heartbeat", (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    service: "food-facts-friends-api",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 router.use("/donations", buildDonationRouter());
 
 app.use(errorHandler);
